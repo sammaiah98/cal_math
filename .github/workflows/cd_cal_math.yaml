@@ -13,30 +13,43 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with: 
-          python-version: '3.10'
-
+      # ✅ Install new Databricks CLI (Go-based)
       - name: Install Databricks CLI
         run: |
-          pip install databricks-cli
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      - name: Configure Databricks
+      # ✅ Set environment variables for authentication
+      - name: Set up Databricks Auth
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          printf "%s\n%s\n" "${{ secrets.DATABRICKS_HOST }}" "${{ secrets.DATABRICKS_TOKEN }}" | databricks configure --token
+          databricks clusters list
 
+      # ✅ Verify CLI access
       - name: Verify CLI
-        run: databricks workspace ls /
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks workspace list /
 
+      # ✅ Create directory
       - name: Create Workspace Directory
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           databricks workspace mkdirs /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/
 
+      # ✅ Upload file (NEW CLI syntax)
       - name: Upload Python file
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          databricks workspace import cal_math.py \
-          /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/cal_math.py \
-          --format SOURCE \
-          --language PYTHON \
-          --overwrite
+          databricks workspace import \
+            cal_math.py \
+            /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/cal_math.py \
+            --language PYTHON \
+            --overwrite
