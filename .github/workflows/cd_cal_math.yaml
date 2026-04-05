@@ -14,24 +14,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with: 
           python-version: '3.10'
 
       - name: Install Databricks CLI
         run: |
-          pip install databricks
+          pip install databricks-cli
 
       - name: Configure Databricks
         run: |
-          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
-          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+          printf "%s\n%s\n" "${{ secrets.DATABRICKS_HOST }}" "${{ secrets.DATABRICKS_TOKEN }}" | databricks configure --token
 
-      - name: Create Workspace Directory (if not exists)
+      - name: Verify CLI
+        run: databricks workspace ls /
+
+      - name: Create Workspace Directory
         run: |
           databricks workspace mkdirs /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/
 
-      - name: Upload Python file to Workspace
+      - name: Upload Python file
         run: |
           databricks workspace import cal_math.py \
           /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/cal_math.py \
