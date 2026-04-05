@@ -18,14 +18,6 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      # ✅ Set environment variables for authentication
-      - name: Set up Databricks Auth
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          databricks clusters list
-
       # ✅ Verify CLI access
       - name: Verify CLI
         env:
