@@ -15,7 +15,7 @@ jobs:
 
       - name: Install Databricks CLI
         run: |
-          pip install databricks-cli
+          pip install databricks
 
       - name: Configure Databricks
         run: |
@@ -33,4 +33,5 @@ jobs:
           databricks workspace import cal_math.py \
           /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/cal_math.py \
           --format SOURCE \
+          --language PYTHON \
           --overwrite
