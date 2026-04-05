@@ -41,7 +41,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           databricks workspace import \
-            cal_math.py \
             /Workspace/Users/sammaiahpenaka98@gmail.com/projects_handling/Deployments/cd_cal_math/cal_math.py \
+            --file cal_math.py \
             --language PYTHON \
             --overwrite
